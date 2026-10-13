@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Navratri Youth Games Suite (Ages 8-12)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .font-fredoka { font-family: 'Fredoka One', cursive; }
+
+        .tap-bounce {
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .tap-bounce:active { transform: scale(0.95); }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900/90 backdrop-blur border-b border-amber-500/30 p-3 md:p-4 sticky top-0 z-50 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showMenu()">
+            <span class="text-3xl">🪔</span>
+            <div>
+                <h1 class="font-fredoka text-xl md:text-2xl text-amber-400 tracking-wide">Navratri Festival Hub</h1>
+                <p class="text-xs text-amber-200/70 font-semibold hidden sm:block">4 Youth Games (Ages 8–12)</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button id="soundToggleBtn" onclick="toggleMute()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-1.5 rounded-full text-xs md:text-sm font-bold border border-amber-500/40 flex items-center gap-1.5 shadow">
+                <span id="soundIcon">🔊</span> <span id="soundText" class="hidden sm:inline">Sound On</span>
+            </button>
+            <button id="homeBtn" onclick="showMenu()" class="hidden bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-full text-xs md:text-sm font-bold shadow border border-rose-400">
+                🏠 Menu
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-3 md:p-6 flex flex-col justify-center items-center">
+
+        <!-- GAME MENU OVERLAY -->
+        <div id="gameMenu" class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 my-auto py-4">
+            
+            <!-- Game 1 Card -->
+            <div onclick="startGame('rangoli')" class="bg-gradient-to-br from-purple-900 to-fuchsia-950 rounded-3xl p-6 shadow-2xl border-2 border-fuchsia-500/50 cursor-pointer tap-bounce flex flex-col items-center text-center relative overflow-hidden group hover:border-fuchsia-400">
+                <div class="text-5xl md:text-6xl mb-3">🎨🌸</div>
+                <h2 class="font-fredoka text-xl md:text-2xl text-fuchsia-300">Master Rangoli Studio</h2>
+                <p class="text-xs md:text-sm mt-1 text-slate-300">Draw with 4/8/16-fold mirror radial symmetry & submit to NPC Mela Judges!</p>
+                <span class="mt-4 px-4 py-1.5 bg-fuchsia-500 hover:bg-fuchsia-400 text-white font-fredoka text-xs rounded-full shadow">Launch Studio ▶</span>
+            </div>
+
+            <!-- Game 2 Card -->
+            <div onclick="startGame('dominoes')" class="bg-gradient-to-br from-indigo-900 to-slate-950 rounded-3xl p-6 shadow-2xl border-2 border-indigo-500/50 cursor-pointer tap-bounce flex flex-col items-center text-center relative overflow-hidden group hover:border-indigo-400">
+                <div class="text-5xl md:text-6xl mb-3">🪔✨</div>
+                <h2 class="font-fredoka text-xl md:text-2xl text-indigo-300">Diya Dominoes</h2>
+                <p class="text-xs md:text-sm mt-1 text-slate-300">Place and rotate 45° mirrors to reflect light rays to ignite target diyas!</p>
+                <span class="mt-4 px-4 py-1.5 bg-indigo-500 hover:bg-indigo-400 text-white font-fredoka text-xs rounded-full shadow">Solve Puzzles ▶</span>
+            </div>
+
+            <!-- Game 3 Card -->
+            <div onclick="startGame('tycoon')" class="bg-gradient-to-br from-amber-900 to-slate-950 rounded-3xl p-6 shadow-2xl border-2 border-amber-500/50 cursor-pointer tap-bounce flex flex-col items-center text-center relative overflow-hidden group hover:border-amber-400">
+                <div class="text-5xl md:text-6xl mb-3">🏙️🥁</div>
+                <h2 class="font-fredoka text-xl md:text-2xl text-amber-300">Navratri Mela Tycoon</h2>
+                <p class="text-xs md:text-sm mt-1 text-slate-300">Manage stalls, ticket pricing, dhol bands & weather for 9 festival nights!</p>
+                <span class="mt-4 px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-fredoka text-xs rounded-full shadow">Play Business ▶</span>
+            </div>
+
+            <!-- Game 4 Card -->
+            <div onclick="startGame('food')" class="bg-gradient-to-br from-rose-900 to-slate-950 rounded-3xl p-6 shadow-2xl border-2 border-rose-500/50 cursor-pointer tap-bounce flex flex-col items-center text-center relative overflow-hidden group hover:border-rose-400">
+                <div class="text-5xl md:text-6xl mb-3">🥘☕</div>
+                <h2 class="font-fredoka text-xl md:text-2xl text-rose-300">Festive Food Dash</h2>
+                <p class="text-xs md:text-sm mt-1 text-slate-300">Fry Jalebi, crisp Fafda, brew Chai & serve guests before patience expires!</p>
+                <span class="mt-4 px-4 py-1.5 bg-rose-500 hover:bg-rose-400 text-white font-fredoka text-xs rounded-full shadow">Start Kitchen ▶</span>
+            </div>
+
+        </div>
+
+        <!-- ==================== GAME 1: MASTER RANGOLI STUDIO ==================== -->
+        <div id="gameRangoli" class="hidden w-full flex flex-col items-center">
+            <div class="bg-slate-900/90 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-fuchsia-500/40 w-full">
+                
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 border-b border-slate-800 pb-3">
+                    <div>
+                        <h2 class="font-fredoka text-xl text-fuchsia-400">Master Rangoli & Mandala Studio</h2>
+                        <p class="text-xs text-slate-400">Real-time radial mirror symmetry canvas</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="clearRangoliCanvas()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-xs font-bold border border-slate-600">🧹 Clear</button>
+                        <button onclick="judgeRangoli()" class="bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white font-fredoka px-4 py-1 rounded-full text-xs shadow-lg">🏆 Submit to NPC Judges</button>
+                    </div>
+                </div>
+
+                <!-- Studio Toolbar -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                    <!-- Symmetry Mode -->
+                    <div>
+                        <label class="text-xs text-fuchsia-300 font-bold block mb-1">Mirror Symmetry:</label>
+                        <div class="flex gap-1">
+                            <button onclick="setSymmetry(4)" id="sym4Btn" class="flex-1 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded">4-Fold</button>
+                            <button onclick="setSymmetry(8)" id="sym8Btn" class="flex-1 py-1 bg-slate-800 text-slate-300 text-xs font-bold rounded">8-Fold</button>
+                            <button onclick="setSymmetry(16)" id="sym16Btn" class="flex-1 py-1 bg-slate-800 text-slate-300 text-xs font-bold rounded">16-Fold</button>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div>
+                        <label class="text-xs text-fuchsia-300 font-bold block mb-1">Glitter Powder Color:</label>
+                        <div class="flex gap-1 overflow-x-auto pb-1" id="rangoliColors">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Size -->
+                    <div>
+                        <label class="text-xs text-fuchsia-300 font-bold block mb-1">Brush Size: <span id="brushSizeVal">6px</span></label>
+                        <input type="range" min="2" max="24" value="6" id="brushSizeSlider" oninput="updateBrushSize(this.value)" class="w-full accent-fuchsia-500">
+                    </div>
+
+                    <!-- Stamps -->
+                    <div>
+                        <label class="text-xs text-fuchsia-300 font-bold block mb-1">Stamp Tool:</label>
+                        <div class="flex gap-1">
+                            <button onclick="selectTool('brush')" id="toolBrushBtn" class="flex-1 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded">🖌️ Brush</button>
+                            <button onclick="selectTool('🪔')" id="toolDiyaBtn" class="py-1 px-2 bg-slate-800 text-slate-300 text-xs font-bold rounded">🪔</button>
+                            <button onclick="selectTool('🌸')" id="toolFlowerBtn" class="py-1 px-2 bg-slate-800 text-slate-300 text-xs font-bold rounded">🌸</button>
+                            <button onclick="selectTool('⭐')" id="toolStarBtn" class="py-1 px-2 bg-slate-800 text-slate-300 text-xs font-bold rounded">⭐</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drawing Canvas Area -->
+                <div class="relative w-full max-w-lg mx-auto aspect-square bg-slate-950 rounded-2xl border-2 border-fuchsia-500/40 overflow-hidden shadow-inner flex justify-center items-center">
+                    <canvas id="rangoliCanvas" width="450" height="450" class="w-full h-full cursor-crosshair touch-none"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- NPC JUDGE MODAL -->
+        <div id="judgeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur z-50 flex justify-center items-center p-4">
+            <div class="bg-slate-900 border-2 border-fuchsia-500 rounded-3xl p-6 max-w-md w-full text-center relative shadow-2xl">
+                <h3 class="font-fredoka text-2xl text-fuchsia-400 mb-2">🏆 Mela Exhibition Ratings</h3>
+                <div class="text-5xl my-2" id="judgeStars">⭐⭐⭐⭐⭐</div>
+                <p id="judgeScoreText" class="font-fredoka text-lg text-amber-300 mb-4">Score: 92/100</p>
+                
+                <div class="space-y-3 text-left text-xs bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">👩‍🎨</span>
+                        <div>
+                            <p class="font-bold text-fuchsia-300">Senior Rangoli Master:</p>
+                            <p id="judgeMasterQuote" class="text-slate-300">"Exquisite radial balance! The geometric symmetry is breathtaking."</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">🪔</span>
+                        <div>
+                            <p class="font-bold text-amber-300">Temple Priest:</p>
+                            <p id="judgePriestQuote" class="text-slate-300">"The vibrant powder colors bring warm festive energy to the courtyard!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeJudgeModal()" class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-fredoka rounded-full shadow">Continue Creating ▶</button>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 2: DIYA DOMINOES ==================== -->
+        <div id="gameDominoes" class="hidden w-full flex flex-col items-center">
+            <div class="bg-slate-900/90 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-indigo-500/40 w-full text-center">
+                
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h2 class="font-fredoka text-xl text-indigo-400">Diya Dominoes (Ray Reflection)</h2>
+                        <p class="text-xs text-slate-400">Rotate mirrors to bounce the sacred light beam into all target diyas!</p>
+                    </div>
+                    <span id="dominoesLevelTag" class="font-fredoka text-xs bg-indigo-950 border border-indigo-500/50 text-indigo-300 px-3 py-1 rounded-full">Level 1/4</span>
+                </div>
+
+                <!-- Level Select -->
+                <div class="flex justify-center gap-2 mb-4">
+                    <button onclick="loadDominoesLevel(0)" id="domLvl0" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white">Lvl 1</button>
+                    <button onclick="loadDominoesLevel(1)" id="domLvl1" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400">Lvl 2</button>
+                    <button onclick="loadDominoesLevel(2)" id="domLvl2" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400">Lvl 3</button>
+                    <button onclick="loadDominoesLevel(3)" id="domLvl3" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400">Lvl 4</button>
+                </div>
+
+                <!-- Dominoes Grid Board -->
+                <div class="inline-block bg-slate-950 p-3 rounded-2xl border-2 border-indigo-500/30 shadow-inner">
+                    <div id="dominoesGrid" class="grid gap-1.5 justify-center">
+                        <!-- Dynamic cells injected -->
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 mt-4">Tap on any <b>Mirror tile</b> (/ or \) to rotate it 90 degrees and direct the light beam!</p>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 3: NAVRATRI MELA TYCOON ==================== -->
+        <div id="gameTycoon" class="hidden w-full flex flex-col items-center">
+            <div class="bg-slate-900/90 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-amber-500/40 w-full">
+                
+                <!-- Status Top Header -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center">
+                    <div>
+                        <span class="text-xs text-slate-400 block">Current Night</span>
+                        <span id="tycoonNight" class="font-fredoka text-lg text-amber-400">Night 1 / 9</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Mela Budget</span>
+                        <span id="tycoonBudget" class="font-fredoka text-lg text-emerald-400">₹1,500</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Crowd Popularity</span>
+                        <span id="tycoonHappiness" class="font-fredoka text-lg text-rose-400">80%</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Ticket Price</span>
+                        <div class="flex items-center justify-center gap-1 mt-0.5">
+                            <button onclick="adjustTicket(-10)" class="w-5 h-5 bg-slate-800 text-slate-300 font-bold text-xs rounded">-</button>
+                            <span id="tycoonPrice" class="font-fredoka text-sm text-yellow-300">₹50</span>
+                            <button onclick="adjustTicket(10)" class="w-5 h-5 bg-slate-800 text-slate-300 font-bold text-xs rounded">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upgrades Section -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                    <!-- Food Stalls -->
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center flex flex-col justify-between">
+                        <div>
+                            <span class="text-3xl">🪔 🥘</span>
+                            <h4 class="font-fredoka text-sm text-amber-300 mt-1">Food Stalls (Lvl <span id="lvlFood">1</span>)</h4>
+                            <p class="text-xs text-slate-400 my-1">Serves Jalebi, Fafda & Chai to visitors.</p>
+                        </div>
+                        <button onclick="upgradeTycoon('food')" id="btnUpgradeFood" class="mt-2 w-full py-1.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-fredoka text-xs rounded-full shadow">Upgrade (₹500)</button>
+                    </div>
+
+                    <!-- Garba Floor -->
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center flex flex-col justify-between">
+                        <div>
+                            <span class="text-3xl">💃 🏮</span>
+                            <h4 class="font-fredoka text-sm text-fuchsia-300 mt-1">Garba Floor & Lights (Lvl <span id="lvlLights">1</span>)</h4>
+                            <p class="text-xs text-slate-400 my-1">Attracts larger evening crowds with decorations.</p>
+                        </div>
+                        <button onclick="upgradeTycoon('lights')" id="btnUpgradeLights" class="mt-2 w-full py-1.5 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-fredoka text-xs rounded-full shadow">Upgrade (₹600)</button>
+                    </div>
+
+                    <!-- Dhol Band -->
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-center flex flex-col justify-between">
+                        <div>
+                            <span class="text-3xl">🥁 🎶</span>
+                            <h4 class="font-fredoka text-sm text-emerald-300 mt-1">Dhol Beats Band (Lvl <span id="lvlDhol">1</span>)</h4>
+                            <p class="text-xs text-slate-400 my-1">Boosts crowd happiness and night stay duration.</p>
+                        </div>
+                        <button onclick="upgradeTycoon('dhol')" id="btnUpgradeDhol" class="mt-2 w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-fredoka text-xs rounded-full shadow">Upgrade (₹450)</button>
+                    </div>
+                </div>
+
+                <!-- Night Log & Action Button -->
+                <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 mb-4">
+                    <h4 class="font-fredoka text-xs text-slate-400 mb-1">Mela Daily News & Event Log:</h4>
+                    <p id="tycoonNewsLog" class="text-xs text-amber-200/90 font-mono">Night 1 ready! Set your ticket prices and open the fairgrounds.</p>
+                </div>
+
+                <button id="tycoonNextBtn" onclick="runTycoonNight()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-fredoka text-base rounded-2xl shadow-lg">🌙 Open Fairgrounds for Night 1 ▶</button>
+
+            </div>
+        </div>
+
+        <!-- ==================== GAME 4: FESTIVE FOOD DASH ==================== -->
+        <div id="gameFood" class="hidden w-full flex flex-col items-center">
+            <div class="bg-slate-900/90 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-rose-500/40 w-full">
+                
+                <!-- Kitchen HUD -->
+                <div class="flex justify-between items-center mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                    <div>
+                        <span class="text-xs text-slate-400 block">Earnings</span>
+                        <span id="foodScore" class="font-fredoka text-lg text-emerald-400">₹0</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Shift Timer</span>
+                        <span id="foodTimer" class="font-fredoka text-lg text-rose-400">45s</span>
+                    </div>
+                    <button onclick="resetFoodDash()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-full border border-slate-700">Restart Shift</button>
+                </div>
+
+                <!-- Customer Order Queue -->
+                <div class="mb-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                    <h4 class="font-fredoka text-xs text-slate-400 mb-2">Hungry Mela Visitors Queue:</h4>
+                    <div id="customerQueue" class="flex gap-3 overflow-x-auto pb-1 min-h-[90px]">
+                        <!-- Dynamic customers -->
+                    </div>
+                </div>
+
+                <!-- Kitchen Workstations -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="prepareFood('jalebi')" class="bg-slate-950 hover:bg-slate-800 p-3 rounded-2xl border border-amber-500/40 text-center tap-bounce">
+                        <span class="text-4xl block mb-1">🌀</span>
+                        <span class="font-fredoka text-xs text-amber-300">Fry Jalebi</span>
+                    </button>
+                    <button onclick="prepareFood('fafda')" class="bg-slate-950 hover:bg-slate-800 p-3 rounded-2xl border border-yellow-500/40 text-center tap-bounce">
+                        <span class="text-4xl block mb-1">🥖</span>
+                        <span class="font-fredoka text-xs text-yellow-300">Crisp Fafda</span>
+                    </button>
+                    <button onclick="prepareFood('vada')" class="bg-slate-950 hover:bg-slate-800 p-3 rounded-2xl border border-orange-500/40 text-center tap-bounce">
+                        <span class="text-4xl block mb-1">🧆</span>
+                        <span class="font-fredoka text-xs text-orange-300">Sabudana Vada</span>
+                    </button>
+                    <button onclick="prepareFood('chai')" class="bg-slate-950 hover:bg-slate-800 p-3 rounded-2xl border border-rose-500/40 text-center tap-bounce">
+                        <span class="text-4xl block mb-1">☕</span>
+                        <span class="font-fredoka text-xs text-rose-300">Brew Chai</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 text-center text-xs py-3 font-semibold">
+        Happy Navratri! 🪔 Created for Kids & Youth Festival Gaming
+    </footer>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        // --- SOUND ENGINE ---
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('soundIcon').innerText = isMuted ? "🔇" : "🔊";
+            document.getElementById('soundText').innerText = isMuted ? "Muted" : "Sound On";
+        }
+
+        function playSound(type) {
+            if (isMuted) return;
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'pop') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523, now);
+                osc.frequency.setValueAtTime(659, now + 0.08);
+                osc.frequency.setValueAtTime(783, now + 0.16);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else if (type === 'rotate') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.05);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now); osc.stop(now + 0.05);
+            }
+        }
+
+        // --- NAVIGATION ---
+        function showMenu() {
+            document.getElementById('gameMenu').classList.remove('hidden');
+            document.getElementById('homeBtn').classList.add('hidden');
+            ['gameRangoli', 'gameDominoes', 'gameTycoon', 'gameFood'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            if (foodInterval) clearInterval(foodInterval);
+        }
+
+        function startGame(gameId) {
+            initAudio();
+            document.getElementById('gameMenu').classList.add('hidden');
+            document.getElementById('homeBtn').classList.remove('hidden');
+
+            ['gameRangoli', 'gameDominoes', 'gameTycoon', 'gameFood'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            if (gameId === 'rangoli') {
+                document.getElementById('gameRangoli').classList.remove('hidden');
+                initRangoliStudio();
+            } else if (gameId === 'dominoes') {
+                document.getElementById('gameDominoes').classList.remove('hidden');
+                initDominoesGame();
+            } else if (gameId === 'tycoon') {
+                document.getElementById('gameTycoon').classList.remove('hidden');
+                initTycoonGame();
+            } else if (gameId === 'food') {
+                document.getElementById('gameFood').classList.remove('hidden');
+                initFoodDash();
+            }
+        }
+
+
+        // =========================================================================
+        // GAME 1: MASTER RANGOLI STUDIO
+        // =========================================================================
+        let rangoliCanvas, rangoliCtx;
+        let isDrawing = false;
+        let activeSymmetry = 4;
+        let currentColor = '#ec4899';
+        let currentBrushSize = 6;
+        let currentTool = 'brush';
+
+        const rangoliColorPalette = [
+            '#ec4899', '#f97316', '#eab308', '#10b981', '#2563eb', '#a855f7', '#ffffff'
+        ];
+
+        function initRangoliStudio() {
+            rangoliCanvas = document.getElementById('rangoliCanvas');
+            rangoliCtx = rangoliCanvas.getContext('2d');
+
+            // Setup color palette UI
+            const colorContainer = document.getElementById('rangoliColors');
+            colorContainer.innerHTML = '';
+            rangoliColorPalette.forEach((hex, i) => {
+                const btn = document.createElement('button');
+                btn.className = `w-6 h-6 rounded-full border-2 ${i === 0 ? 'border-white scale-110' : 'border-transparent'} flex-shrink-0`;
+                btn.style.backgroundColor = hex;
+                btn.onclick = () => {
+                    currentColor = hex;
+                    Array.from(colorContainer.children).forEach(b => b.classList.replace('border-white', 'border-transparent'));
+                    btn.classList.replace('border-transparent', 'border-white');
+                };
+                colorContainer.appendChild(btn);
+            });
+
+            rangoliCanvas.onpointerdown = startRangoliDraw;
+            rangoliCanvas.onpointermove = moveRangoliDraw;
+            rangoliCanvas.onpointerup = () => isDrawing = false;
+
+            clearRangoliCanvas();
+        }
+
+        function clearRangoliCanvas() {
+            rangoliCtx.fillStyle = '#020617';
+            rangoliCtx.fillRect(0, 0, rangoliCanvas.width, rangoliCanvas.height);
+            drawSymmetryGuides();
+        }
+
+        function drawSymmetryGuides() {
+            const cx = rangoliCanvas.width / 2;
+            const cy = rangoliCanvas.height / 2;
+
+            rangoliCtx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+            rangoliCtx.lineWidth = 1;
+
+            for (let i = 0; i < activeSymmetry; i++) {
+                const angle = (i * 2 * Math.PI) / activeSymmetry;
+                rangoliCtx.beginPath();
+                rangoliCtx.moveTo(cx, cy);
+                rangoliCtx.lineTo(cx + Math.cos(angle) * 300, cy + Math.sin(angle) * 300);
+                rangoliCtx.stroke();
+            }
+        }
+
+        function setSymmetry(num) {
+            activeSymmetry = num;
+            playSound('pop');
+            ['sym4Btn', 'sym8Btn', 'sym16Btn'].forEach(id => {
+                document.getElementById(id).className = "flex-1 py-1 bg-slate-800 text-slate-300 text-xs font-bold rounded";
+            });
+            document.getElementById(`sym${num}Btn`).className = "flex-1 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded";
+        }
+
+        function updateBrushSize(val) {
+            currentBrushSize = val;
+            document.getElementById('brushSizeVal').innerText = `${val}px`;
+        }
+
+        function selectTool(tool) {
+            currentTool = tool;
+            playSound('pop');
+            ['toolBrushBtn', 'toolDiyaBtn', 'toolFlowerBtn', 'toolStarBtn'].forEach(id => {
+                document.getElementById(id).className = "py-1 px-2 bg-slate-800 text-slate-300 text-xs font-bold rounded";
+            });
+            if (tool === 'brush') document.getElementById('toolBrushBtn').className = "flex-1 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded";
+            else if (tool === '🪔') document.getElementById('toolDiyaBtn').className = "py-1 px-2 bg-fuchsia-600 text-white text-xs font-bold rounded";
+            else if (tool === '🌸') document.getElementById('toolFlowerBtn').className = "py-1 px-2 bg-fuchsia-600 text-white text-xs font-bold rounded";
+            else if (tool === '⭐') document.getElementById('toolStarBtn').className = "py-1 px-2 bg-fuchsia-600 text-white text-xs font-bold rounded";
+        }
+
+        function getCanvasPoint(e) {
+            const rect = rangoliCanvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (rangoliCanvas.width / rect.width),
+                y: (e.clientY - rect.top) * (rangoliCanvas.height / rect.height)
+            };
+        }
+
+        function startRangoliDraw(e) {
+            isDrawing = true;
+            const pt = getCanvasPoint(e);
+            drawSymmetricPoint(pt.x, pt.y);
+        }
+
+        function moveRangoliDraw(e) {
+            if (!isDrawing) return;
+            const pt = getCanvasPoint(e);
+            drawSymmetricPoint(pt.x, pt.y);
+        }
+
+        function drawSymmetricPoint(x, y) {
+            const cx = rangoliCanvas.width / 2;
+            const cy = rangoliCanvas.height / 2;
+            const dx = x - cx;
+            const dy = y - cy;
+
+            const radius = Math.hypot(dx, dy);
+            const baseAngle = Math.atan2(dy, dx);
+
+            for (let i = 0; i < activeSymmetry; i++) {
+                const angle = baseAngle + (i * 2 * Math.PI) / activeSymmetry;
+                const sx = cx + radius * Math.cos(angle);
+                const sy = cy + radius * Math.sin(angle);
+
+                if (currentTool === 'brush') {
+                    rangoliCtx.fillStyle = currentColor;
+                    rangoliCtx.beginPath();
+                    rangoliCtx.arc(sx, sy, currentBrushSize / 2, 0, Math.PI * 2);
+                    rangoliCtx.fill();
+                } else {
+                    rangoliCtx.font = `${currentBrushSize * 3}px serif`;
+                    rangoliCtx.textAlign = 'center';
+                    rangoliCtx.textBaseline = 'middle';
+                    rangoliCtx.fillText(currentTool, sx, sy);
+                }
+            }
+        }
+
+        function judgeRangoli() {
+            playSound('success');
+            confetti({ particleCount: 80, spread: 70 });
+            document.getElementById('judgeModal').classList.remove('hidden');
+        }
+
+        function closeJudgeModal() {
+            document.getElementById('judgeModal').classList.add('hidden');
+        }
+
+
+        // =========================================================================
+        // GAME 2: DIYA DOMINOES
+        // =========================================================================
+        const dominoesLevels = [
+            {
+                gridSize: 5,
+                source: { x: 0, y: 2, dir: 'R' },
+                targets: [{ x: 4, y: 2 }],
+                mirrors: [{ x: 2, y: 2, type: '/' }]
+            },
+            {
+                gridSize: 5,
+                source: { x: 0, y: 0, dir: 'R' },
+                targets: [{ x: 4, y: 4 }],
+                mirrors: [{ x: 4, y: 0, type: '\\' }]
+            },
+            {
+                gridSize: 5,
+                source: { x: 0, y: 2, dir: 'R' },
+                targets: [{ x: 2, y: 0 }, { x: 4, y: 4 }],
+                mirrors: [{ x: 2, y: 2, type: '/' }, { x: 4, y: 2, type: '\\' }]
+            },
+            {
+                gridSize: 6,
+                source: { x: 0, y: 1, dir: 'R' },
+                targets: [{ x: 5, y: 1 }, { x: 5, y: 5 }],
+                mirrors: [{ x: 3, y: 1, type: '\\' }, { x: 3, y: 5, type: '/' }]
+            }
+        ];
+
+        let currentDominoesLevelIndex = 0;
+        let currentGridState = [];
+
+        function initDominoesGame() {
+            loadDominoesLevel(0);
+        }
+
+        function loadDominoesLevel(idx) {
+            currentDominoesLevelIndex = idx;
+            const lvl = dominoesLevels[idx];
+            document.getElementById('dominoesLevelTag').innerText = `Level ${idx + 1}/${dominoesLevels.length}`;
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`domLvl${i}`).className = i === idx ? "px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white" : "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400";
+            }
+
+            // Build grid
+            currentGridState = Array(lvl.gridSize).fill(null).map(() => Array(lvl.gridSize).fill(null));
+            
+            // Set mirrors
+            lvl.mirrors.forEach(m => {
+                currentGridState[m.y][m.x] = { type: 'mirror', mirror: m.type };
+            });
+
+            renderDominoesBoard();
+        }
+
+        function renderDominoesBoard() {
+            const lvl = dominoesLevels[currentDominoesLevelIndex];
+            const container = document.getElementById('dominoesGrid');
+            container.style.gridTemplateColumns = `repeat(${lvl.gridSize}, minmax(0, 1fr))`;
+            container.innerHTML = '';
+
+            // Compute light ray path
+            const rayPath = computeRayPath();
+
+            for (let y = 0; y < lvl.gridSize; y++) {
+                for (let x = 0; x < lvl.gridSize; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = "w-12 h-12 md:w-14 md:h-14 bg-slate-900 border border-indigo-500/30 rounded-xl flex items-center justify-center relative cursor-pointer tap-bounce";
+
+                    // Highlight ray
+                    const isLit = rayPath.some(p => p.x === x && p.y === y);
+                    if (isLit) {
+                        cell.classList.add('bg-indigo-950/80', 'border-amber-400/50');
+                    }
+
+                    // Check Source
+                    if (lvl.source.x === x && lvl.source.y === y) {
+                        cell.innerHTML = `<span class="text-2xl animate-pulse">☀️</span>`;
+                    }
+                    // Check Target
+                    else if (lvl.targets.some(t => t.x === x && t.y === y)) {
+                        const targetLit = isLit;
+                        cell.innerHTML = `<span class="text-2xl">${targetLit ? '🪔✨' : '🪔'}</span>`;
+                        if (targetLit) cell.classList.add('ring-2', 'ring-amber-400', 'bg-amber-500/20');
+                    }
+                    // Check Mirror
+                    else if (currentGridState[y][x] && currentGridState[y][x].type === 'mirror') {
+                        const m = currentGridState[y][x].mirror;
+                        cell.innerHTML = `<span class="text-xl font-bold ${isLit ? 'text-amber-300' : 'text-indigo-400'}">${m === '/' ? '╱' : '╲'}</span>`;
+                        cell.onclick = () => rotateMirror(x, y);
+                    }
+
+                    container.appendChild(cell);
+                }
+            }
+
+            // Check Win Condition
+            const allTargetsLit = lvl.targets.every(t => rayPath.some(p => p.x === t.x && p.y === t.y));
+            if (allTargetsLit) {
+                playSound('success');
+                confetti({ particleCount: 50, spread: 60 });
+            }
+        }
+
+        function rotateMirror(x, y) {
+            playSound('rotate');
+            if (currentGridState[y][x] && currentGridState[y][x].type === 'mirror') {
+                currentGridState[y][x].mirror = currentGridState[y][x].mirror === '/' ? '\\' : '/';
+                renderDominoesBoard();
+            }
+        }
+
+        function computeRayPath() {
+            const lvl = dominoesLevels[currentDominoesLevelIndex];
+            const path = [];
+            let cx = lvl.source.x;
+            let cy = lvl.source.y;
+            let dir = lvl.source.dir; // R, L, U, D
+
+            for (let step = 0; step < 20; step++) {
+                path.push({ x: cx, y: cy });
+
+                // Move 1 step
+                if (dir === 'R') cx++;
+                else if (dir === 'L') cx--;
+                else if (dir === 'U') cy--;
+                else if (dir === 'D') cy++;
+
+                if (cx < 0 || cx >= lvl.gridSize || cy < 0 || cy >= lvl.gridSize) break;
+
+                // Check mirror collision
+                if (currentGridState[cy][cx] && currentGridState[cy][cx].type === 'mirror') {
+                    const m = currentGridState[cy][cx].mirror;
+                    if (m === '/') {
+                        if (dir === 'R') dir = 'U';
+                        else if (dir === 'L') dir = 'D';
+                        else if (dir === 'U') dir = 'R';
+                        else if (dir === 'D') dir = 'L';
+                    } else if (m === '\\') {
+                        if (dir === 'R') dir = 'D';
+                        else if (dir === 'L') dir = 'U';
+                        else if (dir === 'U') dir = 'L';
+                        else if (dir === 'D') dir = 'R';
+                    }
+                }
+            }
+            return path;
+        }
+
+
+        // =========================================================================
+        // GAME 3: NAVRATRI MELA TYCOON
+        // =========================================================================
+        let tycoonBudget = 1500;
+        let tycoonNight = 1;
+        let tycoonHappiness = 80;
+        let tycoonTicketPrice = 50;
+
+        let lvlFood = 1;
+        let lvlLights = 1;
+        let lvlDhol = 1;
+
+        function initTycoonGame() {
+            tycoonBudget = 1500;
+            tycoonNight = 1;
+            tycoonHappiness = 80;
+            tycoonTicketPrice = 50;
+            lvlFood = 1; lvlLights = 1; lvlDhol = 1;
+            updateTycoonUI();
+        }
+
+        function updateTycoonUI() {
+            document.getElementById('tycoonBudget').innerText = `₹${tycoonBudget}`;
+            document.getElementById('tycoonNight').innerText = `Night ${tycoonNight} / 9`;
+            document.getElementById('tycoonHappiness').innerText = `${tycoonHappiness}%`;
+            document.getElementById('tycoonPrice').innerText = `₹${tycoonTicketPrice}`;
+
+            document.getElementById('lvlFood').innerText = lvlFood;
+            document.getElementById('lvlLights').innerText = lvlLights;
+            document.getElementById('lvlDhol').innerText = lvlDhol;
+        }
+
+        function adjustTicket(delta) {
+            tycoonTicketPrice = Math.max(10, Math.min(200, tycoonTicketPrice + delta));
+            updateTycoonUI();
+        }
+
+        function upgradeTycoon(type) {
+            let cost = 500;
+            if (type === 'food' && tycoonBudget >= 500) {
+                tycoonBudget -= 500; lvlFood++; playSound('success');
+            } else if (type === 'lights' && tycoonBudget >= 600) {
+                tycoonBudget -= 600; lvlLights++; playSound('success');
+            } else if (type === 'dhol' && tycoonBudget >= 450) {
+                tycoonBudget -= 450; lvlDhol++; playSound('success');
+            }
+            updateTycoonUI();
+        }
+
+        function runTycoonNight() {
+            playSound('pop');
+            const visitors = Math.floor((lvlLights * 40 + lvlDhol * 30) * (1 - tycoonTicketPrice / 250));
+            const revenue = visitors * tycoonTicketPrice + (lvlFood * 150);
+            
+            tycoonBudget += revenue;
+            tycoonNight++;
+
+            document.getElementById('tycoonNewsLog').innerText = `Night ${tycoonNight - 1} Summary: ${visitors} visitors attended! Earned ₹${revenue} in total revenue.`;
+
+            if (tycoonNight > 9) {
+                confetti({ particleCount: 150, spread: 100 });
+                document.getElementById('tycoonNewsLog').innerText = `🎉 Festival Complete! Final Mela Earnings: ₹${tycoonBudget}!`;
+                document.getElementById('tycoonNextBtn').disabled = true;
+            } else {
+                updateTycoonUI();
+                document.getElementById('tycoonNextBtn').innerText = `🌙 Open Fairgrounds for Night ${tycoonNight} ▶`;
+            }
+        }
+
+
+        // =========================================================================
+        // GAME 4: FESTIVE FOOD DASH
+        // =========================================================================
+        let foodScore = 0;
+        let foodTimeLeft = 45;
+        let foodInterval = null;
+        let customerOrders = [];
+
+        function initFoodDash() {
+            foodScore = 0;
+            foodTimeLeft = 45;
+            customerOrders = [];
+            
+            document.getElementById('foodScore').innerText = `₹0`;
+            document.getElementById('foodTimer').innerText = `45s`;
+
+            if (foodInterval) clearInterval(foodInterval);
+            foodInterval = setInterval(updateFoodDashTimer, 1000);
+
+            spawnCustomer();
+            spawnCustomer();
+        }
+
+        function spawnCustomer() {
+            if (customerOrders.length >= 4) return;
+            const items = ['jalebi', 'fafda', 'vada', 'chai'];
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+            customerOrders.push({ id: Date.now(), item: randomItem });
+            renderCustomers();
+        }
+
+        function renderCustomers() {
+            const container = document.getElementById('customerQueue');
+            container.innerHTML = '';
+
+            const icons = { jalebi: '🌀', fafda: '🥖', vada: '🧆', chai: '☕' };
+
+            customerOrders.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "p-3 bg-slate-900 border border-slate-700 rounded-xl text-center min-w-[80px]";
+                card.innerHTML = `
+                    <span class="text-3xl block">${icons[c.item]}</span>
+                    <span class="text-[10px] text-amber-300 font-bold capitalize">${c.item}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function prepareFood(item) {
+            const idx = customerOrders.findIndex(c => c.item === item);
+            if (idx !== -1) {
+                playSound('success');
+                foodScore += 80;
+                customerOrders.splice(idx, 1);
+                document.getElementById('foodScore').innerText = `₹${foodScore}`;
+                renderCustomers();
+                setTimeout(spawnCustomer, 1000);
+            } else {
+                playSound('pop');
+            }
+        }
+
+        function updateFoodDashTimer() {
+            foodTimeLeft--;
+            document.getElementById('foodTimer').innerText = `${foodTimeLeft}s`;
+
+            if (foodTimeLeft <= 0) {
+                clearInterval(foodInterval);
+                confetti({ particleCount: 100, spread: 80 });
+                alert(`Shift Ended! You earned ₹${foodScore} serving festival treats!`);
+            }
+        }
+
+        function resetFoodDash() {
+            initFoodDash();
+        }
+
+        // Initialize Menu
+        showMenu();
+    </script>
+</body>
+</html>
